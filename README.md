@@ -53,3 +53,7 @@ Linux優先のチャット型Web試作は `webapp/` にあります。起動手�
 ```
 
 案件ごとにSQLiteの記録と専用作業領域を作成します。Basic認証はlocalhost利用を前提にし、Codex App ServerはWebから直接公開せずPythonバックエンドからstdioで接続します。
+
+## Docker / サーバ版デモ
+
+`server-version` ブランチには、Docker DesktopのUbuntuコンテナで動かす構成を含めています。初回起動時に画像2枚とシナリオ付きのサンプル案件を作成し、動画生成時は音声生成からMP4作成まで自動で進めます。起動手順は [docs/server_local_docker.md](docs/server_local_docker.md) を参照してください。

@@ -4,7 +4,7 @@ let currentCodexThreadId = null;
 let messageSending = false;
 
 const activityStyle = document.createElement('style');
-activityStyle.textContent = '.agent-activity{display:flex;align-items:center;gap:8px;color:#65756e}.agent-spinner{width:14px;height:14px;border:2px solid #c9d9d2;border-top-color:#146b55;border-radius:50%;animation:agent-spin .8s linear infinite;display:inline-block}@keyframes agent-spin{to{transform:rotate(360deg)}}.preview-actions{display:flex;align-items:center;gap:8px}.orientation-control{display:flex;align-items:center;gap:5px;color:#65756e;font-size:12px}.orientation-control select{border:1px solid #d4dfd9;border-radius:6px;padding:9px 8px;background:#fff;color:#123a35;font:inherit}';
+activityStyle.textContent = '.agent-activity{display:flex;align-items:center;gap:8px;color:#65756e}.agent-spinner{width:14px;height:14px;border:2px solid #c9d9d2;border-top-color:#146b55;border-radius:50%;animation:agent-spin .8s linear infinite;display:inline-block}@keyframes agent-spin{to{transform:rotate(360deg)}}.preview-actions{display:flex;align-items:center;gap:8px}.orientation-control{display:flex;align-items:center;gap:5px;color:#65756e;font-size:12px}.orientation-control select{border:1px solid #d4dfd9;border-radius:6px;padding:9px 8px;background:#fff;color:#123a35;font:inherit}.demo-banner{margin:0 0 18px;padding:11px 14px;border:1px solid #e3b36b;border-radius:7px;background:#fff7e8;color:#704b16;font-size:13px;line-height:1.5}';
 document.head.appendChild(activityStyle);
 
 async function api(url, options = {}) {
@@ -61,7 +61,7 @@ async function loadFiles() {
     return !path.startsWith('worktree/') && !path.startsWith('versions/') && !controlNames.has(name);
   });
   const audioFiles = visibleFiles.filter((f) => /\.(wav|mp3|m4a|mp4|webm)$/i.test(f.path));
-  el('files').innerHTML = (visibleFiles.map((f) => `<span class="attachment">${escapeHtml(f.path)}</span>`).join('') || '<span class="muted">添付素材はありません。画像・音声・動画を「添付」から追加してください。</span>') +
+  el('files').innerHTML = (visibleFiles.map((f) => `<a class="attachment" download href="/api/projects/${selectedProject.id}/download/${f.path.split(/[\\/]/).map(encodeURIComponent).join('/')}" title="ダウンロード">${escapeHtml(f.path)}</a>`).join('') || '<span class="muted">添付素材はありません。画像・音声・動画を「添付」から追加してください。</span>') +
     (audioFiles.length ? `<div class="quick transcribe-actions"><span>音声を文字起こし:</span>${audioFiles.map((f) => `<button class="quick-action" data-transcribe="${escapeHtml(f.path)}">${escapeHtml(f.path.split(/[\\/]/).pop())}</button>`).join('')}</div>` : '');
   document.querySelectorAll('[data-transcribe]').forEach((button) => {
     button.onclick = async () => {

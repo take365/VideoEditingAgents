@@ -46,3 +46,26 @@ def create_project(data_root: Path, project_id: str, name: str, templates_root: 
             if source.exists():
                 shutil.copy2(source, project / filename)
     return project
+
+
+def seed_demo_project(data_root: Path, project_id: str, templates_root: Path, sample_root: Path) -> Path:
+    project = create_project(data_root, project_id, "サンプル：2枚画像から動画生成", templates_root)
+    (project / "worktree" / "images").mkdir(parents=True, exist_ok=True)
+    for filename in ("scene_01.png", "scene_02.png"):
+        source = sample_root / "images" / filename
+        if source.exists():
+            shutil.copy2(source, project / "images" / filename)
+            shutil.copy2(source, project / "worktree" / "images" / filename)
+    (project / "scenario.md").write_text(
+        "# サンプルシナリオ\n\n"
+        "このサンプルは、シナリオと画像を用意して、音声と字幕付き動画を一度に生成する流れを確認するための案件です。\n\n"
+        "画面の「動画を生成」を押すと、台本から音声を作成し、2枚の画像と字幕を合成します。\n",
+        encoding="utf-8",
+    )
+    (project / "narration_segments.tsv").write_text(
+        "01\tまずはシナリオと画像を用意します。\tまずはシナリオと画像を用意します。\t\n"
+        "02\tあとは動画を生成するだけで、音声と字幕付きの動画が完成します。\t音声と字幕付きの動画が完成します。\t\n",
+        encoding="utf-8",
+    )
+    shutil.copy2(project / "narration_segments.tsv", project / "worktree" / "narration_segments.tsv")
+    return project

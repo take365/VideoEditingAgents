@@ -20,7 +20,7 @@ from .codex_adapter_v2 import CodexAppServer
 from .config import ROOT, settings
 from .db import Database
 from .jobs import JobManager, now
-from .projects import create_project as create_project_files
+from .projects import create_project as create_project_files, seed_demo_project
 from .security import project_path, safe_project_id, safe_relative_path
 
 
@@ -68,6 +68,12 @@ def startup() -> None:
     db.init()
     db.execute("DELETE FROM artifacts WHERE id NOT IN (SELECT MAX(id) FROM artifacts GROUP BY project_id, path)")
     jobs.recover()
+    if not db.one("SELECT id FROM projects LIMIT 1"):
+        project_id = "project-demo"
+        project = seed_demo_project(settings.data_root, project_id, ROOT / "templates", ROOT / "samples" / "zundamon_intro")
+        timestamp = now()
+        db.execute("INSERT INTO projects(id,name,path,created_at,updated_at) VALUES(?,?,?,?,?)", (project_id, "サンプル：2枚画像から動画生成", str(project), timestamp, timestamp))
+        db.execute("INSERT INTO messages(project_id,role,content,created_at) VALUES(?,?,?,?)", (project_id, "assistant", "サンプル案件を用意しました。画像2枚とシナリオをダウンロードできます。動画を生成すると、台本から音声を作成して動画まで一度に処理します。", timestamp))
 
 
 @app.on_event("shutdown")
@@ -369,10 +375,14 @@ def update_orientation(project_id: str, payload: VideoOrientationInput, _: str =
 @app.post("/api/projects/{project_id}/voicevox")
 def synthesize_voicevox(project_id: str, _: str = Depends(auth)) -> dict:
     project = project_path(settings.data_root, require_project(project_id)["id"])
-    script = ROOT / "scripts" / "synthesize_voicevox.py"
+    script = ROOT / "scripts" / ("synthesize_sakura.py" if settings.sakura_ai_token else "synthesize_voicevox.py")
     try:
         import subprocess
-        result = subprocess.run([sys.executable, str(script), "--project", str(project), "--engine", settings.voicevox_url, "--speaker", str(settings.voicevox_speaker), "--speed", str(settings.voicevox_speed)], capture_output=True, text=True, timeout=600, check=True)
+        if settings.sakura_ai_token:
+            command = [sys.executable, str(script), "--project", str(project), "--base-url", settings.sakura_ai_base_url, "--token", settings.sakura_ai_token, "--speaker", str(settings.sakura_tts_speaker), "--speed", str(settings.voicevox_speed)]
+        else:
+            command = [sys.executable, str(script), "--project", str(project), "--engine", settings.voicevox_url, "--speaker", str(settings.voicevox_speaker), "--speed", str(settings.voicevox_speed)]
+        result = subprocess.run(command, capture_output=True, text=True, timeout=600, check=True)
     except subprocess.CalledProcessError as exc:
         raise HTTPException(502, "VOICEVOX音声生成に失敗しました") from exc
     except FileNotFoundError as exc:
@@ -382,7 +392,7 @@ def synthesize_voicevox(project_id: str, _: str = Depends(auth)) -> dict:
 
 @app.post("/api/projects/{project_id}/transcribe/{relative:path}")
 def transcribe(project_id: str, relative: str, timestamps: bool = False, _: str = Depends(auth)) -> dict:
-    if not settings.openai_api_key:
+    if not settings.openai_api_key and not settings.sakura_ai_token:
         raise HTTPException(503, "OPENAI_API_KEYが設定されていません")
     project = project_path(settings.data_root, require_project(project_id)["id"])
     source = safe_relative_path(project, relative)
@@ -392,13 +402,15 @@ def transcribe(project_id: str, relative: str, timestamps: bool = False, _: str 
         raise HTTPException(400, "音声または動画ファイルを指定してください")
     if source.stat().st_size > 25 * 1024 * 1024:
         raise HTTPException(413, "文字起こし用ファイルは25MB以下にしてください")
-    model = "whisper-1" if timestamps else settings.openai_transcription_model
+    model = settings.sakura_transcription_model if settings.sakura_ai_token else ("whisper-1" if timestamps else settings.openai_transcription_model)
     try:
         with source.open("rb") as audio:
             data = {"model": model, "response_format": "verbose_json" if timestamps else "json"}
             if timestamps:
                 data["timestamp_granularities[]"] = "segment"
-            response = httpx.post("https://api.openai.com/v1/audio/transcriptions", headers={"Authorization": f"Bearer {settings.openai_api_key}"}, data=data, files={"file": (source.name, audio, mimetypes.guess_type(source.name)[0] or "application/octet-stream")}, timeout=300)
+            base_url = settings.sakura_ai_base_url if settings.sakura_ai_token else "https://api.openai.com"
+            token = settings.sakura_ai_token or settings.openai_api_key
+            response = httpx.post(f"{base_url}/v1/audio/transcriptions", headers={"Authorization": f"Bearer {token}"}, data=data, files={"file": (source.name, audio, mimetypes.guess_type(source.name)[0] or "application/octet-stream")}, timeout=300)
         response.raise_for_status()
     except httpx.HTTPStatusError as exc:
         raise HTTPException(502, f"OpenAI文字起こしに失敗しました ({exc.response.status_code})") from exc
