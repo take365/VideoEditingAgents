@@ -137,7 +137,7 @@ PlayResY: {HEIGHT}
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: JA,Noto Sans CJK JP,{subtitle_font_size()},&H00FFFFFF,&H000000FF,&H00000000,&H99000000,1,0,0,0,100,100,0,0,1,3,0,2,120,120,58,1
+Style: JA,IPAGothic,{subtitle_font_size()},&H00FFFFFF,&H000000FF,&H00000000,&H99000000,1,0,0,0,100,100,0,0,1,3,0,2,120,120,58,1
 Style: Other,Arial,34,&H00F4E6C5,&H000000FF,&H00000000,&H99000000,0,0,0,0,100,100,0,0,1,3,0,8,90,90,54,1
 
 [Events]

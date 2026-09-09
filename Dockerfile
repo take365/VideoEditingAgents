@@ -5,7 +5,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     APP_HOST=0.0.0.0
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends ffmpeg fonts-noto-cjk \
+    && apt-get install -y --no-install-recommends ffmpeg fonts-ipafont-gothic \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
