@@ -413,7 +413,9 @@ def transcribe(project_id: str, relative: str, timestamps: bool = False, _: str 
             response = httpx.post(f"{base_url}/v1/audio/transcriptions", headers={"Authorization": f"Bearer {token}"}, data=data, files={"file": (source.name, audio, mimetypes.guess_type(source.name)[0] or "application/octet-stream")}, timeout=300)
         response.raise_for_status()
     except httpx.HTTPStatusError as exc:
-        raise HTTPException(502, f"OpenAI文字起こしに失敗しました ({exc.response.status_code})") from exc
+        detail = exc.response.text.strip().replace("\n", " ")[:500]
+        provider = "Sakura AI Engine" if settings.sakura_ai_token else "OpenAI"
+        raise HTTPException(502, f"{provider}文字起こしに失敗しました ({exc.response.status_code}): {detail}") from exc
     except httpx.HTTPError as exc:
         raise HTTPException(502, "OpenAI文字起こしに失敗しました") from exc
     result = response.json()

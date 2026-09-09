@@ -26,7 +26,7 @@ class Settings:
     sakura_ai_base_url: str = os.getenv("SAKURA_AI_BASE_URL", "https://api.ai.sakura.ad.jp").rstrip("/")
     sakura_tts_speaker: int = int(os.getenv("SAKURA_TTS_SPEAKER", "3"))
     sakura_tts_model: str = os.getenv("SAKURA_TTS_MODEL", "")
-    sakura_transcription_model: str = os.getenv("SAKURA_TRANSCRIPTION_MODEL", "whisper-1")
+    sakura_transcription_model: str = os.getenv("SAKURA_TRANSCRIPTION_MODEL", "whisper-large-v3-turbo")
     openai_api_key: str = os.getenv("OPENAI_API_KEY", "")
     openai_transcription_model: str = os.getenv("OPENAI_TRANSCRIPTION_MODEL", "gpt-transcribe")
     codex_command: str = os.getenv("CODEX_COMMAND", "codex")
