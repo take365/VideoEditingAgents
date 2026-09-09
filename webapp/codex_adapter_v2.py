@@ -99,7 +99,10 @@ class CodexAppServer:
 
     def resume_thread(self, thread_id: str, project_root: Path) -> dict[str, Any]:
         with self.lock:
-            thread = self._ensure().thread_resume(thread_id, **self._thread_options(project_root))
+            # service_name is accepted by thread_start, but not by thread_resume.
+            options = self._thread_options(project_root)
+            options.pop("service_name", None)
+            thread = self._ensure().thread_resume(thread_id, **options)
             self.active_threads[thread_id] = thread
             return {"thread": {"id": thread.id}}
 
