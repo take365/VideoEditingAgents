@@ -28,7 +28,7 @@ app = FastAPI(title="VideoEditingAgents Local")
 basic = HTTPBasic()
 db = Database(settings.database_path)
 jobs = JobManager(db, settings.data_root, ROOT)
-codex = CodexAppServer(settings.codex_command, settings.codex_cwd, settings.codex_approval_policy, settings.codex_sandbox)
+codex = CodexAppServer(settings.codex_command, settings.codex_cwd, settings.codex_approval_policy, settings.codex_sandbox, settings.codex_model)
 
 
 def auth(credentials: HTTPBasicCredentials = Depends(basic)) -> str:

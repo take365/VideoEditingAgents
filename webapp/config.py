@@ -33,6 +33,7 @@ class Settings:
     codex_cwd: str = os.getenv("CODEX_CWD", "")
     codex_approval_policy: str = os.getenv("CODEX_APPROVAL_POLICY", "on-request")
     codex_sandbox: str = os.getenv("CODEX_SANDBOX", "workspace-write")
+    codex_model: str = os.getenv("CODEX_MODEL", "gpt-5.6-luna")
 
 
 settings = Settings()
