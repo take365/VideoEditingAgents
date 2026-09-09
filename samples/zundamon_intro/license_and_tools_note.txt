@@ -1,0 +1,6 @@
+使用素材メモ
+
+- scene_01.png / scene_02.png: ChatGPTの画像生成機能で作成したサンプル画像。
+- 音声: ローカルVOICEVOXまたはVOICEVOX互換エンジンで生成する想定。利用時は使用する音声ライブラリ・話者の最新の利用規約とクレジット条件を確認する。
+- BGM: このサンプルには未同梱。
+- 動画生成: VideoEditingAgents既存のbuild_slideshow_video.pyを使用。

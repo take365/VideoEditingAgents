@@ -1,0 +1,6 @@
+file 'D:/project/VideoEditingAgents/sample_sources/cocoro/segments/scene_01.mp4'
+file 'D:/project/VideoEditingAgents/sample_sources/cocoro/segments/scene_02.mp4'
+file 'D:/project/VideoEditingAgents/sample_sources/cocoro/segments/scene_03.mp4'
+file 'D:/project/VideoEditingAgents/sample_sources/cocoro/segments/scene_04.mp4'
+file 'D:/project/VideoEditingAgents/sample_sources/cocoro/segments/scene_05.mp4'
+file 'D:/project/VideoEditingAgents/sample_sources/cocoro/segments/scene_ending_hold.mp4'
