@@ -1,0 +1,2 @@
+# Optional local ASR used by scripts/review_video.py
+faster-whisper>=1.1,<2

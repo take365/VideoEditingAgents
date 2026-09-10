@@ -139,9 +139,11 @@ PlayResY: {HEIGHT}
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
 Style: JA,Noto Sans CJK JP,{subtitle_font_size()},&H00FFFFFF,&H000000FF,&H00000000,&H99000000,1,0,0,0,100,100,0,0,1,3,0,2,120,120,58,1
 Style: Other,Arial,34,&H00F4E6C5,&H000000FF,&H00000000,&H99000000,0,0,0,0,100,100,0,0,1,3,0,8,90,90,54,1
+Style: Credit,Arial,22,&H00FFFFFF,&H000000FF,&H00000000,&H99000000,0,0,0,0,100,100,0,0,1,2,0,1,36,36,28,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,{ass_time(0)},{ass_time(duration_seconds)},Credit,,0,0,0,,読み上げ：VOICEVOX 四国めたん（ノーマル）
 {chr(10).join(events)}
 """
     path.write_text(content, encoding="utf-8")
@@ -193,7 +195,7 @@ def main():
         visual_input = (["-stream_loop", "-1"] if last.suffix.lower() in {".mp4", ".mov", ".m4v", ".webm"} else ["-loop", "1"])
         run([
             "ffmpeg", "-y", *visual_input, "-t", str(ENDING_HOLD_SECONDS), "-i", str(last),
-            "-f", "lavfi", "-t", str(ENDING_HOLD_SECONDS), "-i", "anullsrc=channel_layout=stereo:sample_rate=44100",
+            "-f", "lavfi", "-t", str(ENDING_HOLD_SECONDS), "-i", "anullsrc=channel_layout=mono:sample_rate=24000",
             "-vf", f"scale={WIDTH}:{HEIGHT}:force_original_aspect_ratio=increase,crop={WIDTH}:{HEIGHT}",
             "-c:v", "libx264", "-pix_fmt", "yuv420p", "-r", "30", "-c:a", "aac", "-shortest", str(ending)
         ])

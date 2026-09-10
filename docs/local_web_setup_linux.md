@@ -14,6 +14,19 @@ chmod +x scripts/run_local_linux.sh
 
 VOICEVOX Engineを同じPCで起動してください。既定URLは `http://127.0.0.1:50021`、話者は `VOICEVOX_SPEAKER` で変更できます。案件フォルダの `narration_segments.tsv`、`images/`、`audio/` を使って既存の動画生成スクリプトを実行します。
 
+## 生成後レビュー
+
+動画生成が成功すると、案件の `review/video_review.html` と `review/captures/` が自動生成されます。MP4のコーデック・解像度・音声トラックを確認し、代表フレームで画像や字幕の豆腐文字・切れ・位置・改行を目視確認します。音声はローカルの `faster-whisper` で再文字起こしし、原稿との類似度を参考値として表示します。
+
+ASRレビューを有効にするには、仮想環境で次を一度実行してください。
+
+```bash
+source .venv/bin/activate
+python -m pip install -r requirements-local.txt
+```
+
+既定モデルは `large-v3-turbo` です。精度優先で `large-v3` を使う場合は、レビュー用スクリプトを `--model large-v3` で実行します。モデル未導入でも動画生成は止まらず、HTMLにはASR未実施として記録されます。
+
 ## Codex App Server
 
 Linux上で `codex` コマンドを使える状態にし、画面の「ログイン」からChatGPT認証を開始します。WebアプリはApp Serverへ直接公開せず、Pythonバックエンドがstdioで接続します。Codexの作業対象は案件ごとの `worktree/` です。

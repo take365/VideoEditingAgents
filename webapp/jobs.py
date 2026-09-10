@@ -122,12 +122,26 @@ class JobManager:
                     if review.returncode != 0:
                         output += f"\n[review warning]\n{review.stdout[-2000:]}\n{review.stderr[-2000:]}"
 
-                self._update(job_id, "succeeded", 100, "動画生成が完了しました")
+                video_review_script = self.repo_root / "scripts" / "review_video.py"
+                if not video_review_script.exists():
+                    video_review_script = project / "worktree" / "scripts" / "review_video.py"
+                if video_review_script.exists():
+                    self._update(job_id, "running", 95, "動画キャプチャと音声レビューを生成中")
+                    video_review = subprocess.run(
+                        [sys.executable, str(video_review_script), "--project", str(project)],
+                        cwd=project,
+                        capture_output=True,
+                        text=True,
+                    )
+                    if video_review.returncode != 0:
+                        output += f"\n[video review warning]\n{video_review.stdout[-2000:]}\n{video_review.stderr[-2000:]}"
+
+                self._update(job_id, "succeeded", 100, "動画生成とレビューが完了しました")
                 for path in sorted((project / "output").glob("*")) + sorted((project / "review").glob("*")):
                     if path.is_file():
                         self._register_artifact(project_id, job_id, project, path)
-                self._add_message(project_id, "動画生成が完了しました。右側のプレビューと成果物一覧を確認できます。")
-                self._notify_completion(project_id, job_id, "succeeded", 100, "動画生成が完了しました")
+                self._add_message(project_id, "動画生成とレビューが完了しました。動画、キャプチャ、レビューHTMLを確認できます。")
+                self._notify_completion(project_id, job_id, "succeeded", 100, "動画生成とレビューが完了しました")
                 (project / "logs").mkdir(exist_ok=True)
                 with (project / "logs" / "render.log").open("a", encoding="utf-8") as log:
                     log.write(f"[{now()}] job={job_id} returncode={process.returncode}\n{output[-4000:]}\n")
