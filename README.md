@@ -4,9 +4,7 @@
 
 ## サンプル
 
-実際にこの構成で作成した紹介動画です。GitHub Releaseの公開アセットを使って、ブラウザから再生・ダウンロードできます。
-
-<video src="https://github.com/take365/VideoEditingAgents/releases/download/demo-video-20260911/video_no_bgm.mp4" controls width="800"></video>
+実際にこの構成で作成した紹介動画です。GitHub Releaseの公開アセットをクリックすると、ブラウザで再生またはダウンロードできます。
 
 - [紹介動画 MP4を開く](https://github.com/take365/VideoEditingAgents/releases/download/demo-video-20260911/video_no_bgm.mp4)
 - [紹介動画デモIssue](https://github.com/take365/VideoEditingAgents/issues/1)
