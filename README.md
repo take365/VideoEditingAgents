@@ -4,9 +4,12 @@
 
 ## サンプル
 
-実際にこの構成で作成した紹介動画です。
+実際にこの構成で作成した紹介動画です。GitHub Releaseの公開アセットを使って、ブラウザから再生・ダウンロードできます。
 
-- [紹介動画 MP4](workspaces/project-codex-video-guide-illustrated-20260910/output/video_no_bgm.mp4)
+<video src="https://github.com/take365/VideoEditingAgents/releases/download/demo-video-20260911/video_no_bgm.mp4" controls width="800"></video>
+
+- [紹介動画 MP4を開く](https://github.com/take365/VideoEditingAgents/releases/download/demo-video-20260911/video_no_bgm.mp4)
+- [紹介動画デモIssue](https://github.com/take365/VideoEditingAgents/issues/1)
 - [動画レビュー HTML](workspaces/project-codex-video-guide-illustrated-20260910/review/video_review.html)
 - [シーン・台本確認 HTML](workspaces/project-codex-video-guide-illustrated-20260910/review/scene_review.html)
 
